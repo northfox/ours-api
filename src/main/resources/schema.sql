@@ -31,3 +31,10 @@ create table if not exists trx_todo
     deleted_at timestamp,
     primary key (project_id, id)
 );
+
+create or replace view view_todo
+as
+select t.*, p.TITLE as project_title, s.NAME as status
+from trx_todo t
+         left join trx_project p on t.project_id = p.id
+         left join mst_status s on t.status_id = s.id;
