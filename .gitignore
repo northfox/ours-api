@@ -34,3 +34,4 @@ build/
 trace.db/
 test.db*
 cheatsheets*
+README.html
