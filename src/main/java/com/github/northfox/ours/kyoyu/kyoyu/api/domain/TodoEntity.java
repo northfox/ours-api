@@ -32,6 +32,8 @@ public class TodoEntity {
     private String title;
     @Column(name = "status_id")
     private Integer statusId = 0;
+    @Column(name = "cost")
+    private Integer cost = 0;
     @Column(name = "deadline")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;

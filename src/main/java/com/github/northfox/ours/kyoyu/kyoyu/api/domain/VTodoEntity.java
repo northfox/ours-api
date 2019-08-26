@@ -33,19 +33,21 @@ public class VTodoEntity {
     @Column(name = "title")
     private String title;
     @Column(name = "status_id")
-    private Integer statusId = 0;
+    private Integer statusId;
     @Column(name = "status")
     private String status;
+    @Column(name = "cost")
+    private Integer cost;
     @Column(name = "deadline")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt = DateTime.now().toDate();
+    private Date createdAt;
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt = DateTime.now().toDate();
+    private Date updatedAt;
     @Column(name = "done_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date doneAt;

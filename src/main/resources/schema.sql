@@ -24,6 +24,7 @@ create table if not exists trx_todo
     id         serial unique not null,
     title      varchar(4000) not null,
     status_id  int references mst_status (id),
+    cost       int                    default 0,
     deadline   timestamp,
     created_at timestamp     not null default now(),
     updated_at timestamp     not null default now(),

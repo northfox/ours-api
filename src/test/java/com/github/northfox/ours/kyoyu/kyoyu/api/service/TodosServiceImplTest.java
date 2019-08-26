@@ -53,7 +53,7 @@ public class TodosServiceImplTest {
     @Test
     void save_データを登録できること() {
         Date now = new Date();
-        TodoEntity expected = new TodoEntity(0, 0, "title", 0, null, now, now, null, null);
+        TodoEntity expected = new TodoEntity(0, 0, "title", 0, 0, null, now, now, null, null);
         when(repository.save(any())).thenReturn(expected);
         TodoEntity actual = sut.save(expected);
 
