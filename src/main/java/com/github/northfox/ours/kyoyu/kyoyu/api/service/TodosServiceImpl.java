@@ -23,7 +23,7 @@ public class TodosServiceImpl implements TodosService {
 
     static {
         Date now = new Date();
-        DUMMY_ENTITY = new VTodoEntity(9999, "dummyProject", 9999, "dummy", 0, "未着手", null, now, now, null, null);
+        DUMMY_ENTITY = new VTodoEntity(9999, "dummyProject", 9999, "dummy", 0, "未着手", 0, null, now, now, null, null);
     }
 
     @Autowired

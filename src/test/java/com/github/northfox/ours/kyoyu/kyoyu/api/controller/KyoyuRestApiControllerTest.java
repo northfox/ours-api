@@ -49,7 +49,7 @@ public class KyoyuRestApiControllerTest {
         DateTimeUtils.setCurrentMillisFixed(10L);
         Date now = DateTime.now().toDate();
         List<VTodoEntity> expected = Arrays.asList(
-                new VTodoEntity(0, "project-title", 0, "title", 0, "未着手", now, now, now, null, null));
+                new VTodoEntity(0, "project-title", 0, "title", 0, "未着手", 0, now, now, now, null, null));
 
         when(service.all()).thenReturn(expected);
 
@@ -62,7 +62,7 @@ public class KyoyuRestApiControllerTest {
     void apiV1BookmarksPost_Todoを追加できること() throws Exception {
         DateTimeUtils.setCurrentMillisFixed(10L);
         Date now = DateTime.now().toDate();
-        TodoEntity expected = new TodoEntity(0, 0, "title", 0, null, now, now, null, null);
+        TodoEntity expected = new TodoEntity(0, 0, "title", 0, 0, null, now, now, null, null);
         when(service.save(any())).thenReturn(expected);
         String expectedJson = mapper.writeValueAsString(expected);
 
