@@ -1,9 +1,12 @@
 package com.github.northfox.ours.kyoyu.kyoyu.api.controller;
 
 
+import com.github.northfox.ours.kyoyu.kyoyu.api.domain.ProjectEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.StatusEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.TodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
+import com.github.northfox.ours.kyoyu.kyoyu.api.repository.StatusRepository;
+import com.github.northfox.ours.kyoyu.kyoyu.api.service.ProjectsService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.StatusesService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.TodosService;
 import java.util.List;
@@ -27,11 +30,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping(value = "/kyoyu/api/v1", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class KyoyuRestApiController {
 
-    @Autowired
-    private TodosService todosService;
+    private final StatusesService statusesService;
+    private final ProjectsService projectsService;
+    private final TodosService todosService;
 
     @Autowired
-    private StatusesService statusesService;
+    public KyoyuRestApiController(
+            StatusesService statusesService,
+            ProjectsService projectsService,
+            TodosService todosService) {
+        this.statusesService = statusesService;
+        this.projectsService = projectsService;
+        this.todosService = todosService;
+    }
 
     @RequestMapping(value = "/statuses", method = {RequestMethod.GET})
     public ResponseEntity<List<StatusEntity>> apiV1Statuses() {
@@ -45,6 +56,21 @@ public class KyoyuRestApiController {
     public ResponseEntity<StatusEntity> apiV1StatusesPost(@RequestBody StatusEntity entity) {
         preCall();
         StatusEntity result = statusesService.save(entity);
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/projects", method = {RequestMethod.GET})
+    public ResponseEntity<List<ProjectEntity>> apiV1Projects() {
+        preCall();
+        List<ProjectEntity> result = projectsService.all();
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/projects", method = {RequestMethod.POST},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<ProjectEntity> apiV1ProjectsPost(@RequestBody ProjectEntity entity) {
+        preCall();
+        ProjectEntity result = projectsService.save(entity);
         return ResponseEntity.ok(result);
     }
 
