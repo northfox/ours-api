@@ -1,6 +1,7 @@
 package com.github.northfox.ours.kyoyu.kyoyu.api.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -96,6 +97,18 @@ public class KyoyuRestApiControllerTest {
         when(projectsService.all()).thenReturn(expected);
 
         mockMvc.perform(get("/kyoyu/api/v1/projects"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void apiV1ProjectById_指定したデータが取得できること() throws Exception {
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
+        ProjectEntity expected = new ProjectEntity(0, "test00", now, now, null);
+        when(projectsService.find(anyInt())).thenReturn(expected);
+
+        mockMvc.perform(get("/kyoyu/api/v1/projects/0"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(expected)));
     }

@@ -5,7 +5,7 @@ import com.github.northfox.ours.kyoyu.kyoyu.api.domain.ProjectEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.StatusEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.TodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
-import com.github.northfox.ours.kyoyu.kyoyu.api.repository.StatusRepository;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.ProjectsService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.StatusesService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.TodosService;
@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -63,6 +64,14 @@ public class KyoyuRestApiController {
     public ResponseEntity<List<ProjectEntity>> apiV1Projects() {
         preCall();
         List<ProjectEntity> result = projectsService.all();
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/projects/{projectId}", method = {RequestMethod.GET})
+    public ResponseEntity<ProjectEntity> apiV1ProjectById(@PathVariable Integer projectId)
+            throws NotExistsEntityException {
+        preCall();
+        ProjectEntity result = projectsService.find(projectId);
         return ResponseEntity.ok(result);
     }
 

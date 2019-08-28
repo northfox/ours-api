@@ -1,13 +1,18 @@
 package com.github.northfox.ours.kyoyu.kyoyu.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.ProjectEntity;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException.Entities;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.ProjectRepository;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +41,22 @@ class ProjectsServiceImplTest {
         when(repository.findAll()).thenReturn(expected);
         List<ProjectEntity> actual = sut.all();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void find_指定したIDのデータが取得できること() throws NotExistsEntityException {
+        ProjectEntity expected = new ProjectEntity(10, "test10", null, null, null);
+        when(repository.findById(anyInt())).thenReturn(Optional.of(expected));
+        ProjectEntity actual = sut.find(10);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void find_指定したIDのデータが存在しない場合例外が発生すること() {
+        when(repository.findById(anyInt())).thenReturn(Optional.empty());
+        NotExistsEntityException exception = assertThrows(NotExistsEntityException.class,
+                () -> sut.find(10));
+        assertEquals(exception.getMessage(), "[プロジェクト]には、指定されたID(10)を持つデータが存在しません。");
     }
 
     @Test
