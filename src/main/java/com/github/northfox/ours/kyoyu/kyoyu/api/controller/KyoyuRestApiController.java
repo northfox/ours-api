@@ -83,6 +83,14 @@ public class KyoyuRestApiController {
         return ResponseEntity.ok(result);
     }
 
+    @RequestMapping(value = "/projects/{projectId}/todos", method = {RequestMethod.GET})
+    public ResponseEntity<List<VTodoEntity>> apiV1TodosOfProjectById(@PathVariable Integer projectId)
+            throws NotExistsEntityException {
+        preCall();
+        List<VTodoEntity> result = todosService.findByProjectId(projectId);
+        return ResponseEntity.ok(result);
+    }
+
     @RequestMapping(value = "/todos", method = {RequestMethod.GET})
     public ResponseEntity<List<VTodoEntity>> apiV1Todos() {
         preCall();

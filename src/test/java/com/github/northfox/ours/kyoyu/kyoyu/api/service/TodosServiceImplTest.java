@@ -61,4 +61,16 @@ public class TodosServiceImplTest {
         assertEquals(expected, actual);
         verify(repository, times(1)).save(expected);
     }
+
+    @Test
+    void findByProjectId_指定したプロジェクトIDのデータを取得できること() {
+        Date now = new Date();
+        VTodoEntity expected1 = new VTodoEntity(1, "project1", 2, "title2", 10, "着手中", 100, now, now, now, now, now);
+        VTodoEntity expected2 = new VTodoEntity(1, "project1", 5, "title2", 20, "待ち", 500, null, now, now, null, null);
+        List<VTodoEntity> expected = Arrays.asList(expected1, expected2);
+        when(viewRepository.findAll(any(Example.class))).thenReturn(expected);
+
+        List<VTodoEntity> actual = sut.findByProjectId(1);
+        assertEquals(expected, actual);
+    }
 }

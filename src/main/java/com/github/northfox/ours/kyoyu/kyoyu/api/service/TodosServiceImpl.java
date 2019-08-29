@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,6 +43,13 @@ public class TodosServiceImpl implements TodosService {
     public TodoEntity save(TodoEntity entity) {
         preCall("save");
         return repository.save(entity);
+    }
+
+    @Override
+    public List<VTodoEntity> findByProjectId(Integer projectId) {
+        VTodoEntity criteria = new VTodoEntity(projectId, null, null, null, null, null, null, null, null, null, null, null);
+        Example<VTodoEntity> example = Example.of(criteria);
+        return viewRepository.findAll(example);
     }
 
     private void preCall(String methodName) {
