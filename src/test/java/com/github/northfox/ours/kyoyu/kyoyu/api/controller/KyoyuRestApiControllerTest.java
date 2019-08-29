@@ -144,6 +144,27 @@ public class KyoyuRestApiControllerTest {
     }
 
     @Test
+    void apiV1TodosOfProjectByIdPost_指定したプロジェクトにTodoが登録できること() throws Exception {
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
+        TodoEntity request = new TodoEntity(0, 0, "title", 0, 0, null, now, now, null, null);
+        String requestJson = mapper.writeValueAsString(request);
+
+        // expected
+        VTodoEntity expected =
+                new VTodoEntity(0, "project-title", 0, "title", 0, "未着手", 0, now, now, now, null, null);
+        String expectedJson = mapper.writeValueAsString(expected);
+        when(todosService.saveInProject(anyInt(), any())).thenReturn(expected);
+
+        // verify
+        mockMvc.perform(post("/kyoyu/api/v1/projects/0/todos")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
+    }
+
+    @Test
     void apiV1Todos_すべてのTodoが取得できること() throws Exception {
         DateTimeUtils.setCurrentMillisFixed(10L);
         Date now = DateTime.now().toDate();
