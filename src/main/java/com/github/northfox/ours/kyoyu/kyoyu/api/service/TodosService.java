@@ -7,4 +7,5 @@ import java.util.List;
 public interface TodosService {
     List<VTodoEntity> all();
     TodoEntity save(TodoEntity entity);
+    List<VTodoEntity> findByProjectId(Integer projectId);
 }

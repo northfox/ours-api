@@ -130,7 +130,21 @@ public class KyoyuRestApiControllerTest {
     }
 
     @Test
-    void apiV1Todos_すべてのデータが取得できること() throws Exception {
+    void apiV1TodosOfProjectById_指定したプロジェクトIDのTodoがすべて取得できること() throws Exception {
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
+        List<VTodoEntity> expected = Arrays.asList(
+                new VTodoEntity(0, "project-title", 0, "title", 0, "未着手", 0, now, now, now, null, null));
+
+        when(todosService.findByProjectId(anyInt())).thenReturn(expected);
+
+        mockMvc.perform(get("/kyoyu/api/v1/projects/0/todos"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mapper.writeValueAsString(expected)));
+    }
+
+    @Test
+    void apiV1Todos_すべてのTodoが取得できること() throws Exception {
         DateTimeUtils.setCurrentMillisFixed(10L);
         Date now = DateTime.now().toDate();
         List<VTodoEntity> expected = Arrays.asList(
