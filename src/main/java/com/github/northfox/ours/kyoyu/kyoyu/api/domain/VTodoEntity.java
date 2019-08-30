@@ -22,12 +22,11 @@ import org.joda.time.DateTime;
 @Entity
 @Table(name = "view_todo")
 public class VTodoEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "project_id")
     private Integer projectId;
     @Column(name = "project_title")
     private String projectTitle;
+    @Id
     @Column(name = "id")
     private Integer id;
     @Column(name = "title")

@@ -2,6 +2,8 @@ package com.github.northfox.ours.kyoyu.kyoyu.api.service;
 
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.TodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException.Entities;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.TodoRepository;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.VTodoRepository;
 import java.util.Date;
@@ -35,24 +37,32 @@ public class TodosServiceImpl implements TodosService {
 
     @Override
     public List<VTodoEntity> all() {
-        preCall("all");
         return viewRepository.findAll();
     }
 
     @Override
-    public TodoEntity save(TodoEntity entity) {
-        preCall("save");
-        return repository.save(entity);
-    }
-
-    @Override
     public List<VTodoEntity> findByProjectId(Integer projectId) {
-        VTodoEntity criteria = new VTodoEntity(projectId, null, null, null, null, null, null, null, null, null, null, null);
+        VTodoEntity criteria = new VTodoEntity();
+        criteria.setProjectId(projectId);
         Example<VTodoEntity> example = Example.of(criteria);
         return viewRepository.findAll(example);
     }
 
-    private void preCall(String methodName) {
-        log.info(String.format("execution: %s.%s()", repository.getClass().getName(), methodName));
+    @Override
+    public VTodoEntity findByTodoId(Integer todoId) throws NotExistsEntityException {
+        return viewRepository.findById(todoId)
+                .orElseThrow(() -> new NotExistsEntityException(Entities.VTODO, todoId));
+    }
+
+    @Override
+    public TodoEntity save(TodoEntity entity) {
+        return repository.save(entity);
+    }
+
+    @Override
+    public VTodoEntity saveInProject(Integer projectId, TodoEntity entity) throws NotExistsEntityException {
+        entity.setProjectId(projectId);
+        TodoEntity savedEntity = repository.save(entity);
+        return findByTodoId(savedEntity.getId());
     }
 }

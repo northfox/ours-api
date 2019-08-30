@@ -6,19 +6,21 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.TodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.TodoRepository;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.VTodoRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,6 +53,18 @@ public class TodosServiceImplTest {
     }
 
     @Test
+    void findByProjectId_指定したプロジェクトIDのデータを取得できること() {
+        Date now = new Date();
+        VTodoEntity expected1 = new VTodoEntity(1, "project1", 2, "title2", 10, "着手中", 100, now, now, now, now, now);
+        VTodoEntity expected2 = new VTodoEntity(1, "project1", 5, "title2", 20, "待ち", 500, null, now, now, null, null);
+        List<VTodoEntity> expected = Arrays.asList(expected1, expected2);
+        when(viewRepository.findAll(any(Example.class))).thenReturn(expected);
+
+        List<VTodoEntity> actual = sut.findByProjectId(1);
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void save_データを登録できること() {
         Date now = new Date();
         TodoEntity expected = new TodoEntity(0, 0, "title", 0, 0, null, now, now, null, null);
@@ -63,14 +77,18 @@ public class TodosServiceImplTest {
     }
 
     @Test
-    void findByProjectId_指定したプロジェクトIDのデータを取得できること() {
+    void saveInProject_データを指定したプロジェクト内に登録できること() throws NotExistsEntityException {
         Date now = new Date();
-        VTodoEntity expected1 = new VTodoEntity(1, "project1", 2, "title2", 10, "着手中", 100, now, now, now, now, now);
-        VTodoEntity expected2 = new VTodoEntity(1, "project1", 5, "title2", 20, "待ち", 500, null, now, now, null, null);
-        List<VTodoEntity> expected = Arrays.asList(expected1, expected2);
-        when(viewRepository.findAll(any(Example.class))).thenReturn(expected);
+        TodoEntity expectedTodo = new TodoEntity(0, 0, "title", 0, 0, null, now, now, null, null);
+        VTodoEntity expectedVtodo = new VTodoEntity(1, "project1", 2, "title2", 10, "着手中", 100, now, now, now, now,
+                now);
+        when(repository.save(any())).thenReturn(expectedTodo);
+        when(viewRepository.findById(anyInt())).thenReturn(Optional.of(expectedVtodo));
+        VTodoEntity actual = sut.saveInProject(expectedTodo.getProjectId(), expectedTodo);
 
-        List<VTodoEntity> actual = sut.findByProjectId(1);
-        assertEquals(expected, actual);
+        // expected
+        assertEquals(expectedVtodo, actual);
+        verify(repository, times(1)).save(expectedTodo);
+        verify(viewRepository, times(1)).findById(expectedTodo.getId());
     }
 }
