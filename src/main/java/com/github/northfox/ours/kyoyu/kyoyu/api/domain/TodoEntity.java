@@ -22,10 +22,10 @@ import org.joda.time.DateTime;
 @Entity
 @Table(name = "trx_todo")
 public class TodoEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "project_id")
     private Integer projectId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Column(name = "title")
