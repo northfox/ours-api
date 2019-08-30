@@ -42,8 +42,8 @@ public class TodosServiceImpl implements TodosService {
 
     @Override
     public List<VTodoEntity> findByProjectId(Integer projectId) {
-        VTodoEntity criteria = new VTodoEntity(projectId, null, null, null, null, null, null, null, null, null, null,
-                null);
+        VTodoEntity criteria = new VTodoEntity();
+        criteria.setProjectId(projectId);
         Example<VTodoEntity> example = Example.of(criteria);
         return viewRepository.findAll(example);
     }
