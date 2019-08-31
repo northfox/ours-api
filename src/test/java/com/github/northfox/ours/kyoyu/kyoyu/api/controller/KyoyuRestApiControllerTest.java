@@ -60,8 +60,8 @@ public class KyoyuRestApiControllerTest {
         DateTimeUtils.setCurrentMillisFixed(10L);
         Date now = DateTime.now().toDate();
         List<StatusEntity> expected = Arrays.asList(
-                new StatusEntity(0, "test00", now, now, null),
-                new StatusEntity(10, "test10", now, now, null));
+                new StatusEntity(0, "test00", 0, now, now, null),
+                new StatusEntity(10, "test10", 10, now, now, null));
 
         when(statusesService.all()).thenReturn(expected);
 
@@ -74,7 +74,7 @@ public class KyoyuRestApiControllerTest {
     void apiV1StatusesPost_Statusを追加できること() throws Exception {
         DateTimeUtils.setCurrentMillisFixed(10L);
         Date now = DateTime.now().toDate();
-        StatusEntity expected = new StatusEntity(0, "test00", now, now, null);
+        StatusEntity expected = new StatusEntity(0, "test00", 0, now, now, null);
         when(statusesService.save(any())).thenReturn(expected);
         String expectedJson = mapper.writeValueAsString(expected);
 

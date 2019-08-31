@@ -2,12 +2,12 @@ create table if not exists mst_status
 (
     id         serial primary key,
     name       varchar(4000) unique not null,
+    sort       int unique           not null,
     created_at timestamp            not null default now(),
     updated_at timestamp            not null default now(),
     deleted_at timestamp
 
 );
-
 
 create table if not exists trx_project
 (

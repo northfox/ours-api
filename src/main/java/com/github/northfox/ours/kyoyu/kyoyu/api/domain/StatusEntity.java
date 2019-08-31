@@ -28,6 +28,8 @@ public class StatusEntity {
     private Integer id;
     @Column(name = "name")
     private String name;
+    @Column(name = "sort")
+    private Integer sort;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)

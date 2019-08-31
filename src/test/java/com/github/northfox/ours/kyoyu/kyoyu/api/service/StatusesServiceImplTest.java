@@ -30,16 +30,16 @@ class StatusesServiceImplTest {
     @Test
     void all_すべてのデータが取得できること() {
         List<StatusEntity> expected = Arrays.asList(
-                new StatusEntity(0, "test00", null, null, null),
-                new StatusEntity(10, "test10", null, null, null));
-        when(repository.findAll()).thenReturn(expected);
+                new StatusEntity(0, "test00", 0, null, null, null),
+                new StatusEntity(10, "test10", 10, null, null, null));
+        when(repository.findAllByOrderBySort()).thenReturn(expected);
         List<StatusEntity> actual = sut.all();
         assertEquals(expected, actual);
     }
 
     @Test
     void save_データを登録できること() {
-        StatusEntity expected = new StatusEntity(0, "test00", null, null, null);
+        StatusEntity expected = new StatusEntity(0, "test00", 0, null, null, null);
         when(repository.save(any())).thenReturn(expected);
         StatusEntity actual = sut.save(expected);
         assertEquals(expected, actual);

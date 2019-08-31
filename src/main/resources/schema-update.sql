@@ -1,0 +1,1 @@
+alter table mst_status add column sort int unique not null;
