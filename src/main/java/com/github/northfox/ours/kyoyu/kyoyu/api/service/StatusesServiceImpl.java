@@ -11,6 +11,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,7 +29,7 @@ public class StatusesServiceImpl implements StatusesService {
 
     @Override
     public List<StatusEntity> all() {
-        return repository.findAll();
+        return repository.findAllByOrderBySort();
     }
 
     @Override
