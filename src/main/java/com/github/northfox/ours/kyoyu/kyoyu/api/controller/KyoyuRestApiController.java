@@ -5,6 +5,7 @@ import com.github.northfox.ours.kyoyu.kyoyu.api.domain.ProjectEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.StatusEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.TodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.ApplicationException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.ProjectsService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.StatusesService;
@@ -66,6 +67,15 @@ public class KyoyuRestApiController {
             @RequestBody StatusEntity entity) {
         preCall();
         StatusEntity result = statusesService.update(statusId, entity);
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/statuses/{statusId}", method = {RequestMethod.DELETE},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<StatusEntity> apiV1StatusesDelete(@PathVariable Integer statusId)
+            throws ApplicationException {
+        preCall();
+        StatusEntity result = statusesService.delete(statusId);
         return ResponseEntity.ok(result);
     }
 

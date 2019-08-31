@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.StatusEntity;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.ApplicationException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.StatusRepository;
 import java.util.Arrays;
 import java.util.Date;
@@ -76,6 +77,8 @@ class StatusesServiceImplTest {
     @Test
     void update_メタデータが更新されないこと() {
         // expected
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
         Integer updateTargetId = 9999;
         StatusEntity stored = new StatusEntity(1, "test01", 1, new Date(1), new Date(2), new Date(3));
         StatusEntity expected = new StatusEntity(0, "test00", 0, null, null, null);
@@ -90,9 +93,29 @@ class StatusesServiceImplTest {
         assertEquals(stored.getCreatedAt(), expected.getCreatedAt());
         assertEquals(false, stored.getUpdatedAt().equals(expected.getUpdatedAt()),
                 String.format("expected: Not [%s]. but, actual is same.", stored.getUpdatedAt()));
+        assertEquals(now, expected.getUpdatedAt());
         assertEquals(stored.getDeletedAt(), expected.getDeletedAt());
         verify(entityManager, times(1)).find(StatusEntity.class, expected.getId(), LockModeType.PESSIMISTIC_READ);
         verify(repository, times(1)).save(expected);
     }
 
+    @Test
+    void delete_データを論理削除できること() throws ApplicationException {
+        // expected
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
+        StatusEntity expected = new StatusEntity(0, "test00", 0, new Date(1), new Date(2), null);
+        when(entityManager.find(StatusEntity.class, expected.getId(), LockModeType.PESSIMISTIC_READ))
+                .thenReturn(expected);
+        when(repository.save(any())).thenReturn(expected);
+
+        // exercise
+        StatusEntity actual = sut.delete(expected.getId());
+
+        // verify
+        assertEquals(expected, actual);
+        assertEquals(now, actual.getDeletedAt());
+        verify(entityManager, times(1)).find(StatusEntity.class, expected.getId(), LockModeType.PESSIMISTIC_READ);
+        verify(repository, times(1)).save(expected);
+    }
 }
