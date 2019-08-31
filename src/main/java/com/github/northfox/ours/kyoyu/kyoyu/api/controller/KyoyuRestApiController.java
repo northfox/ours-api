@@ -60,6 +60,15 @@ public class KyoyuRestApiController {
         return ResponseEntity.ok(result);
     }
 
+    @RequestMapping(value = "/statuses/{statusId}", method = {RequestMethod.PUT},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<StatusEntity> apiV1StatusesPut(@PathVariable Integer statusId,
+            @RequestBody StatusEntity entity) {
+        preCall();
+        StatusEntity result = statusesService.update(statusId, entity);
+        return ResponseEntity.ok(result);
+    }
+
     @RequestMapping(value = "/projects", method = {RequestMethod.GET})
     public ResponseEntity<List<ProjectEntity>> apiV1Projects() {
         preCall();

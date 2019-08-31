@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -80,6 +81,23 @@ public class KyoyuRestApiControllerTest {
 
         //expected
         mockMvc.perform(post("/kyoyu/api/v1/statuses")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(expectedJson))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
+    }
+
+
+    @Test
+    void apiV1StatusesPut_Statusを更新できること() throws Exception {
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
+        StatusEntity expected = new StatusEntity(0, "test00", 0, now, now, null);
+        when(statusesService.update(anyInt(), any())).thenReturn(expected);
+        String expectedJson = mapper.writeValueAsString(expected);
+
+        //expected
+        mockMvc.perform(put("/kyoyu/api/v1/statuses/0")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(expectedJson))
                 .andExpect(status().isOk())

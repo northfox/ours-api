@@ -6,4 +6,5 @@ import java.util.List;
 public interface StatusesService {
     List<StatusEntity> all();
     StatusEntity save(StatusEntity entity);
+    StatusEntity update(Integer statusId, StatusEntity entity);
 }
