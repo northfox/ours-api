@@ -32,7 +32,7 @@ class StatusesServiceImplTest {
         List<StatusEntity> expected = Arrays.asList(
                 new StatusEntity(0, "test00", 0, null, null, null),
                 new StatusEntity(10, "test10", 10, null, null, null));
-        when(repository.findAll()).thenReturn(expected);
+        when(repository.findAllByOrderBySort()).thenReturn(expected);
         List<StatusEntity> actual = sut.all();
         assertEquals(expected, actual);
     }
