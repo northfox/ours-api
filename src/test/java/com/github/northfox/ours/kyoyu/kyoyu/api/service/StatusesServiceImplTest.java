@@ -1,6 +1,7 @@
 package com.github.northfox.ours.kyoyu.kyoyu.api.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
@@ -9,10 +10,12 @@ import static org.mockito.Mockito.when;
 
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.StatusEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.exception.ApplicationException;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.StatusRepository;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import org.joda.time.DateTime;
@@ -55,6 +58,22 @@ class StatusesServiceImplTest {
         when(repository.save(any())).thenReturn(expected);
         StatusEntity actual = sut.save(expected);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void find_指定したIDのデータが取得できること() throws NotExistsEntityException {
+        StatusEntity expected = new StatusEntity(0, "test00", 0, null, null, null);
+        when(repository.findById(anyInt())).thenReturn(Optional.of(expected));
+        StatusEntity actual = sut.find(10);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void find_指定したIDのデータが存在しない場合例外が発生すること() {
+        when(repository.findById(anyInt())).thenReturn(Optional.empty());
+        NotExistsEntityException exception = assertThrows(NotExistsEntityException.class,
+                () -> sut.find(10));
+        assertEquals(exception.getMessage(), "[ステータス]には、指定されたID(10)を持つデータが存在しません。");
     }
 
     @Test

@@ -89,6 +89,18 @@ public class KyoyuRestApiControllerTest {
     }
 
     @Test
+    void apiV1StatusesById_指定したStatusを取得できること() throws Exception {
+        StatusEntity expected = new StatusEntity(0, "test00", 0, new Date(1), new Date(2), null);
+        when(statusesService.find(anyInt())).thenReturn(expected);
+        String expectedJson = mapper.writeValueAsString(expected);
+
+        //expected
+        mockMvc.perform(get("/kyoyu/api/v1/statuses/0"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
+    }
+
+    @Test
     void apiV1StatusesPut_Statusを更新できること() throws Exception {
         DateTimeUtils.setCurrentMillisFixed(10L);
         Date now = DateTime.now().toDate();

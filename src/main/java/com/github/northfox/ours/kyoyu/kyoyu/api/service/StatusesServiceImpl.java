@@ -4,6 +4,8 @@ import com.github.northfox.ours.kyoyu.kyoyu.api.domain.StatusEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.TodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.exception.ApplicationException;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException.Entities;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.StatusRepository;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.TodoRepository;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.VTodoRepository;
@@ -44,6 +46,12 @@ public class StatusesServiceImpl implements StatusesService {
     @Override
     public StatusEntity save(StatusEntity entity) {
         return repository.save(entity);
+    }
+
+    @Override
+    public StatusEntity find(Integer statusId) throws NotExistsEntityException {
+        return repository.findById(statusId)
+                .orElseThrow(() -> new NotExistsEntityException(Entities.STATUS, statusId));
     }
 
     @Override

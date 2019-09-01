@@ -61,6 +61,15 @@ public class KyoyuRestApiController {
         return ResponseEntity.ok(result);
     }
 
+    @RequestMapping(value = "/statuses/{statusId}", method = {RequestMethod.GET},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<StatusEntity> apiV1StatusesById(@PathVariable Integer statusId)
+            throws NotExistsEntityException {
+        preCall();
+        StatusEntity result = statusesService.find(statusId);
+        return ResponseEntity.ok(result);
+    }
+
     @RequestMapping(value = "/statuses/{statusId}", method = {RequestMethod.PUT},
             produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<StatusEntity> apiV1StatusesPut(@PathVariable Integer statusId,
@@ -116,6 +125,7 @@ public class KyoyuRestApiController {
         VTodoEntity result = todosService.saveInProject(projectId, entity);
         return ResponseEntity.ok(result);
     }
+
 
     @RequestMapping(value = "/todos", method = {RequestMethod.GET})
     public ResponseEntity<List<VTodoEntity>> apiV1Todos() {
