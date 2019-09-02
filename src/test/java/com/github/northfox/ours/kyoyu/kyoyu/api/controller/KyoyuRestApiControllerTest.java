@@ -18,7 +18,6 @@ import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.ProjectsService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.StatusesService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.TodosService;
-import com.sun.tools.javac.comp.Todo;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
