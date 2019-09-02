@@ -5,6 +5,7 @@ import com.github.northfox.ours.kyoyu.kyoyu.api.domain.ProjectEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.StatusEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.TodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.ApplicationException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.ProjectsService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.StatusesService;
@@ -45,6 +46,7 @@ public class KyoyuRestApiController {
         this.todosService = todosService;
     }
 
+    // Statuses
     @RequestMapping(value = "/statuses", method = {RequestMethod.GET})
     public ResponseEntity<List<StatusEntity>> apiV1Statuses() {
         preCall();
@@ -60,6 +62,34 @@ public class KyoyuRestApiController {
         return ResponseEntity.ok(result);
     }
 
+    @RequestMapping(value = "/statuses/{statusId}", method = {RequestMethod.GET},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<StatusEntity> apiV1StatusesById(@PathVariable Integer statusId)
+            throws NotExistsEntityException {
+        preCall();
+        StatusEntity result = statusesService.find(statusId);
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/statuses/{statusId}", method = {RequestMethod.PUT},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<StatusEntity> apiV1StatusesPut(@PathVariable Integer statusId,
+            @RequestBody StatusEntity entity) {
+        preCall();
+        StatusEntity result = statusesService.update(statusId, entity);
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/statuses/{statusId}", method = {RequestMethod.DELETE},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<StatusEntity> apiV1StatusesDelete(@PathVariable Integer statusId)
+            throws ApplicationException {
+        preCall();
+        StatusEntity result = statusesService.delete(statusId);
+        return ResponseEntity.ok(result);
+    }
+
+    // Projects
     @RequestMapping(value = "/projects", method = {RequestMethod.GET})
     public ResponseEntity<List<ProjectEntity>> apiV1Projects() {
         preCall();
@@ -83,6 +113,7 @@ public class KyoyuRestApiController {
         return ResponseEntity.ok(result);
     }
 
+    // Projects/Todos
     @RequestMapping(value = "/projects/{projectId}/todos", method = {RequestMethod.GET})
     public ResponseEntity<List<VTodoEntity>> apiV1TodosOfProjectById(@PathVariable Integer projectId) {
         preCall();
@@ -95,6 +126,34 @@ public class KyoyuRestApiController {
             @RequestBody TodoEntity entity) throws NotExistsEntityException {
         preCall();
         VTodoEntity result = todosService.saveInProject(projectId, entity);
+        return ResponseEntity.ok(result);
+    }
+
+
+    @RequestMapping(value = "/projects/{projectId}/todos/{todoId}", method = {RequestMethod.GET},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<VTodoEntity> apiV1ProjectsTodosById(@PathVariable Integer projectId,
+            @PathVariable Integer todoId) throws NotExistsEntityException {
+        preCall();
+        VTodoEntity result = todosService.findByProjectIdByTodoId(projectId, todoId);
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/projects/{projectId}/todos/{todoId}", method = {RequestMethod.PUT},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<TodoEntity> apiV1ProjectsTodosPut(@PathVariable Integer projectId,
+            @PathVariable Integer todoId, @RequestBody TodoEntity entity) {
+        preCall();
+        TodoEntity result = todosService.update(projectId, todoId, entity);
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/projects/{projectId}/todos/{todoId}", method = {RequestMethod.DELETE},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<TodoEntity> apiV1ProjectsTodosDelete(@PathVariable Integer projectId,
+            @PathVariable Integer todoId) throws ApplicationException {
+        preCall();
+        TodoEntity result = todosService.delete(projectId, todoId);
         return ResponseEntity.ok(result);
     }
 

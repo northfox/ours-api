@@ -1,10 +1,8 @@
 package com.github.northfox.ours.kyoyu.kyoyu.api.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
@@ -13,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.TodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.ApplicationException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.TodoRepository;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.VTodoRepository;
@@ -21,6 +20,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,11 +40,14 @@ public class TodosServiceImplTest {
     @MockBean
     private TodoRepository repository;
 
+    @MockBean
+    private EntityManager entityManager;
+
     private TodosService sut;
 
     @BeforeEach
     void setup() {
-        sut = new TodosServiceImpl(viewRepository, repository);
+        sut = new TodosServiceImpl(viewRepository, repository, entityManager);
     }
 
     @Test
@@ -90,5 +96,85 @@ public class TodosServiceImplTest {
         assertEquals(expectedVtodo, actual);
         verify(repository, times(1)).save(expectedTodo);
         verify(viewRepository, times(1)).findById(expectedTodo.getId());
+    }
+
+    @Test
+    void findByProjectIdByTodoId_指定したプロジェクト内で指定したIDのデータが取得できること() throws NotExistsEntityException {
+        Date now = new Date();
+        VTodoEntity expected = new VTodoEntity(1, "project1", 2, "title2", 10, "着手中", 100, now, now, now, now, now);
+        when(viewRepository.findOne(any())).thenReturn(Optional.of(expected));
+        VTodoEntity actual = sut.findByProjectIdByTodoId(expected.getProjectId(), expected.getId());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void findByProjectIdByTodoId_指定したIDのデータが存在しない場合例外が発生すること() {
+        when(viewRepository.findOne(any())).thenReturn(Optional.empty());
+        NotExistsEntityException exception = assertThrows(NotExistsEntityException.class,
+                () -> sut.findByProjectIdByTodoId(0, 0));
+        assertEquals(exception.getMessage(), "[Todo]には、指定されたID(0)を持つデータが存在しません。");
+    }
+
+    @Test
+    void update_データを更新できること() {
+        // expected
+        Date now = new Date();
+        TodoEntity expected = new TodoEntity(0, 0, "title", 0, 0, null, now, now, null, null);
+        when(entityManager.find(TodoEntity.class, expected.getId(), LockModeType.PESSIMISTIC_READ))
+                .thenReturn(expected);
+        when(repository.save(any())).thenReturn(expected);
+
+        // exercise
+        TodoEntity actual = sut.update(expected.getProjectId(), expected.getId(), expected);
+
+        // verify
+        assertEquals(expected, actual);
+        verify(entityManager, times(1)).find(TodoEntity.class, expected.getId(), LockModeType.PESSIMISTIC_READ);
+        verify(repository, times(1)).save(expected);
+    }
+
+    @Test
+    void update_メタデータが更新されないこと() {
+        // expected
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
+        Integer updateTargetId = 9999;
+        TodoEntity stored = new TodoEntity(0, 0, "title", 0, 0, null, new Date(1), new Date(2), new Date(3), null);
+        TodoEntity expected = new TodoEntity(0, 1, "title", 0, 0, null, null, null, null, null);
+        when(entityManager.find(TodoEntity.class, updateTargetId, LockModeType.PESSIMISTIC_READ)).thenReturn(stored);
+        when(repository.save(any())).thenReturn(expected);
+
+        // exercise
+        TodoEntity actual = sut.update(expected.getProjectId(), updateTargetId, expected);
+
+        // verify
+        assertEquals(updateTargetId, expected.getId());
+        assertEquals(stored.getCreatedAt(), expected.getCreatedAt());
+        assertEquals(false, stored.getUpdatedAt().equals(expected.getUpdatedAt()),
+                String.format("expected: Not [%s]. but, actual is same.", stored.getUpdatedAt()));
+        assertEquals(now, expected.getUpdatedAt());
+        assertEquals(stored.getDeletedAt(), expected.getDeletedAt());
+        verify(entityManager, times(1)).find(TodoEntity.class, expected.getId(), LockModeType.PESSIMISTIC_READ);
+        verify(repository, times(1)).save(expected);
+    }
+
+    @Test
+    void delete_データを論理削除できること() throws ApplicationException {
+        // expected
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
+        TodoEntity expected = new TodoEntity(0, 0, "title", 0, 0, null, new Date(1), new Date(2), new Date(3), null);
+        when(entityManager.find(TodoEntity.class, expected.getId(), LockModeType.PESSIMISTIC_READ))
+                .thenReturn(expected);
+        when(repository.save(any())).thenReturn(expected);
+
+        // exercise
+        TodoEntity actual = sut.delete(expected.getProjectId(), expected.getId());
+
+        // verify
+        assertEquals(expected, actual);
+        assertEquals(now, actual.getDeletedAt());
+        verify(entityManager, times(1)).find(TodoEntity.class, expected.getId(), LockModeType.PESSIMISTIC_READ);
+        verify(repository, times(1)).save(expected);
     }
 }

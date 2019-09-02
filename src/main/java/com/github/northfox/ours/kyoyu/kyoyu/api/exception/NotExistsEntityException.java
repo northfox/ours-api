@@ -24,7 +24,7 @@ public class NotExistsEntityException extends ApplicationException {
         super(generateMessage(entity, projectId));
     }
 
-    private static String generateMessage(Entities entity, Integer projectId) {
-        return String.format("[%s]には、指定されたID(%s)を持つデータが存在しません。", entity.getWhatOfMessage(), projectId);
+    private static String generateMessage(Entities entity, Integer id) {
+        return String.format("[%s]には、指定されたID(%s)を持つデータが存在しません。", entity.getWhatOfMessage(), id);
     }
 }
