@@ -46,6 +46,7 @@ public class KyoyuRestApiController {
         this.todosService = todosService;
     }
 
+    // Statuses
     @RequestMapping(value = "/statuses", method = {RequestMethod.GET})
     public ResponseEntity<List<StatusEntity>> apiV1Statuses() {
         preCall();
@@ -88,6 +89,7 @@ public class KyoyuRestApiController {
         return ResponseEntity.ok(result);
     }
 
+    // Projects
     @RequestMapping(value = "/projects", method = {RequestMethod.GET})
     public ResponseEntity<List<ProjectEntity>> apiV1Projects() {
         preCall();
@@ -111,6 +113,7 @@ public class KyoyuRestApiController {
         return ResponseEntity.ok(result);
     }
 
+    // Projects/Todos
     @RequestMapping(value = "/projects/{projectId}/todos", method = {RequestMethod.GET})
     public ResponseEntity<List<VTodoEntity>> apiV1TodosOfProjectById(@PathVariable Integer projectId) {
         preCall();
@@ -126,6 +129,33 @@ public class KyoyuRestApiController {
         return ResponseEntity.ok(result);
     }
 
+
+    @RequestMapping(value = "/projects/{projectId}/todos/{todoId}", method = {RequestMethod.GET},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<VTodoEntity> apiV1ProjectsTodosById(@PathVariable Integer projectId,
+            @PathVariable Integer todoId) throws NotExistsEntityException {
+        preCall();
+        VTodoEntity result = todosService.findByProjectIdByTodoId(projectId, todoId);
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/projects/{projectId}/todos/{todoId}", method = {RequestMethod.PUT},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<TodoEntity> apiV1ProjectsTodosPut(@PathVariable Integer projectId,
+            @PathVariable Integer todoId, @RequestBody TodoEntity entity) {
+        preCall();
+        TodoEntity result = todosService.update(projectId, todoId, entity);
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/projects/{projectId}/todos/{todoId}", method = {RequestMethod.DELETE},
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<TodoEntity> apiV1ProjectsTodosDelete(@PathVariable Integer projectId,
+            @PathVariable Integer todoId) throws ApplicationException {
+        preCall();
+        TodoEntity result = todosService.delete(projectId, todoId);
+        return ResponseEntity.ok(result);
+    }
 
     @RequestMapping(value = "/todos", method = {RequestMethod.GET})
     public ResponseEntity<List<VTodoEntity>> apiV1Todos() {

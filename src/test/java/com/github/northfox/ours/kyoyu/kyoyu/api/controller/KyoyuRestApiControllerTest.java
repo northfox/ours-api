@@ -18,6 +18,7 @@ import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.ProjectsService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.StatusesService;
 import com.github.northfox.ours.kyoyu.kyoyu.api.service.TodosService;
+import com.sun.tools.javac.comp.Todo;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -204,6 +205,49 @@ public class KyoyuRestApiControllerTest {
         mockMvc.perform(post("/kyoyu/api/v1/projects/0/todos")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(requestJson))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
+    }
+
+    @Test
+    void apiV1ProjectsTodosById_指定したProjectのTodoを取得できること() throws Exception {
+        VTodoEntity expected = new VTodoEntity(0, "project-title", 1, "title", 0, "未着手", 0, new Date(0), new Date(1),
+                new Date(3), null, null);
+        when(todosService.findByProjectIdByTodoId(anyInt(), anyInt())).thenReturn(expected);
+        String expectedJson = mapper.writeValueAsString(expected);
+
+        //expected
+        mockMvc.perform(get("/kyoyu/api/v1/projects/0/todos/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
+    }
+
+    @Test
+    void apiV1ProjectsTodosPut_ProjectのTodoを更新できること() throws Exception {
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
+        TodoEntity expected = new TodoEntity(0, 0, "title", 0, 0, null, now, now, null, null);
+        when(todosService.update(anyInt(), anyInt(), any())).thenReturn(expected);
+        String expectedJson = mapper.writeValueAsString(expected);
+
+        //expected
+        mockMvc.perform(put("/kyoyu/api/v1/projects/0/todos/0")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(expectedJson))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
+    }
+
+    @Test
+    void apiV1ProjectsTodosDelete_ProjectのTodoを削除できること() throws Exception {
+        DateTimeUtils.setCurrentMillisFixed(10L);
+        Date now = DateTime.now().toDate();
+        TodoEntity expected = new TodoEntity(0, 0, "title", 0, 0, null, now, now, null, null);
+        when(todosService.delete(anyInt(), anyInt())).thenReturn(expected);
+        String expectedJson = mapper.writeValueAsString(expected);
+
+        //expected
+        mockMvc.perform(delete("/kyoyu/api/v1/projects/0/todos/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedJson));
     }

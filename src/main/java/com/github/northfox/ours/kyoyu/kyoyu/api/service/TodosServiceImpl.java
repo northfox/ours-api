@@ -1,19 +1,24 @@
 package com.github.northfox.ours.kyoyu.kyoyu.api.service;
 
+import com.github.northfox.ours.kyoyu.kyoyu.api.domain.StatusEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.TodoEntity;
 import com.github.northfox.ours.kyoyu.kyoyu.api.domain.VTodoEntity;
+import com.github.northfox.ours.kyoyu.kyoyu.api.exception.ApplicationException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException;
 import com.github.northfox.ours.kyoyu.kyoyu.api.exception.NotExistsEntityException.Entities;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.TodoRepository;
 import com.github.northfox.ours.kyoyu.kyoyu.api.repository.VTodoRepository;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @Service
 @Transactional
@@ -22,6 +27,7 @@ public class TodosServiceImpl implements TodosService {
 
     private final VTodoRepository viewRepository;
     private final TodoRepository repository;
+    private final EntityManager entityManager;
     final static VTodoEntity DUMMY_ENTITY;
 
     static {
@@ -30,9 +36,10 @@ public class TodosServiceImpl implements TodosService {
     }
 
     @Autowired
-    public TodosServiceImpl(VTodoRepository viewRepository, TodoRepository repository) {
+    public TodosServiceImpl(VTodoRepository viewRepository, TodoRepository repository, EntityManager entityManager) {
         this.viewRepository = viewRepository;
         this.repository = repository;
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -64,5 +71,37 @@ public class TodosServiceImpl implements TodosService {
         entity.setProjectId(projectId);
         TodoEntity savedEntity = repository.save(entity);
         return findByTodoId(savedEntity.getId());
+    }
+
+    @Override
+    public VTodoEntity findByProjectIdByTodoId(Integer projectId, Integer todoId) throws NotExistsEntityException {
+        VTodoEntity criteria = new VTodoEntity();
+        criteria.setProjectId(projectId);
+        criteria.setId(todoId);
+        Example<VTodoEntity> example = Example.of(criteria);
+        return viewRepository.findOne(example)
+                .orElseThrow(() -> new NotExistsEntityException(Entities.VTODO, todoId));
+    }
+
+    @Override
+    public TodoEntity update(Integer projectId, Integer todoId, TodoEntity entity) {
+        TodoEntity stored = entityManager.find(TodoEntity.class, todoId, LockModeType.PESSIMISTIC_READ);
+        entity.setProjectId(projectId);
+        entity.setId(todoId);
+        entity.setCreatedAt(stored.getCreatedAt());
+        entity.setUpdatedAt(DateTime.now().toDate());
+        entity.setDeletedAt(stored.getDeletedAt());
+        return repository.save(entity);
+    }
+
+    @Override
+    public TodoEntity delete(Integer projectId, Integer todoId) throws ApplicationException {
+        TodoEntity stored = entityManager.find(TodoEntity.class, todoId, LockModeType.PESSIMISTIC_READ);
+        if (ObjectUtils.isEmpty(stored.getDeletedAt())) {
+            stored.setDeletedAt(DateTime.now().toDate());
+            return repository.save(stored);
+        }
+        throw new ApplicationException(
+                String.format("指定されたTODOは削除済です。[id: %s, title: %s]", stored.getId(), stored.getTitle()));
     }
 }
