@@ -8,10 +8,10 @@
     <version>2.2.0.M4</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
-  <groupId>com.github.northfox.ours.kyoyu</groupId>
-  <artifactId>kyoyu-api</artifactId>
+  <groupId>com.github.northfox.ours</groupId>
+  <artifactId>ours-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>kyoyu-api</name>
+  <name>ours-api</name>
   <description>Ours project for Spring Boot</description>
 
   <properties>
