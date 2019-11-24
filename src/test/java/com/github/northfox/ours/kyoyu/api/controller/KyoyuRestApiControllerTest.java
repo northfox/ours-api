@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = KyoyuRestApiController.class)
-public class BousaiRestApiControllerTest {
+public class KyoyuRestApiControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
