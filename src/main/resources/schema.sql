@@ -1,3 +1,5 @@
+drop view if exists view_todo;
+
 create table if not exists mst_status
 (
     id         serial primary key,
