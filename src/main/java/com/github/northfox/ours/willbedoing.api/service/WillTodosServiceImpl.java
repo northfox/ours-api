@@ -1,16 +1,19 @@
 package com.github.northfox.ours.willbedoing.api.service;
 
-import com.github.northfox.ours.kyoyu.api.domain.VTodoEntity;
 import com.github.northfox.ours.willbedoing.api.domain.WillBackupEntity;
 import com.github.northfox.ours.willbedoing.api.domain.WillTodoEntity;
 import com.github.northfox.ours.willbedoing.api.exception.ApplicationException;
 import com.github.northfox.ours.willbedoing.api.repository.WillBackupRepository;
 import com.github.northfox.ours.willbedoing.api.repository.WillTodoRepository;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
 @RequiredArgsConstructor
 public class WillTodosServiceImpl implements WillTodosService {
 
@@ -18,7 +21,7 @@ public class WillTodosServiceImpl implements WillTodosService {
   private final WillTodoRepository willTodoRepository;
 
   @Override
-  public List<WillTodoEntity> all() {
+  public List<WillTodoEntity> findAll() {
     return willTodoRepository.findAll();
   }
 
@@ -44,8 +47,32 @@ public class WillTodosServiceImpl implements WillTodosService {
   }
 
   @Override
-  public List<WillTodoEntity> saveAll(String keyword, List<WillTodoEntity> entity) {
-    return null;
+  @Transactional(rollbackFor = {ApplicationException.class})
+  public List<WillTodoEntity> saveAll(String keyword, List<WillTodoEntity> entity) throws ApplicationException {
+    Date now = new Date();
+    String requestedBy = "service";
+    WillBackupEntity backup = WillBackupEntity.builder()
+        .savedKeyword(keyword)
+        .createdAt(now)
+        .createdBy(requestedBy)
+        .updatedAt(now)
+        .updatedBy(requestedBy)
+        .build();
+    Optional<WillBackupEntity> foundBackup = willBackupRepository.findOne(Example.of(backup));
+    if (foundBackup.isPresent()) {
+      throw new ApplicationException("禁止ワードか使用済のキーワードが指定されました。");
+    } else {
+      backup = willBackupRepository.save(backup);
+    }
+
+    Integer backupId = backup.getId();
+    entity.forEach(e -> {
+      e.setBackupId(backupId);
+      e.setUpdatedAt(now);
+      e.setUpdatedBy(requestedBy);
+    });
+
+    return willTodoRepository.saveAll(entity);
   }
 
   @Override
