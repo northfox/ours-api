@@ -28,13 +28,13 @@ public class WillTodosServiceImpl implements WillTodosService {
   @Override
   public List<WillTodoEntity> findByKeyword(String keyword) throws ApplicationException {
     WillBackupEntity backupCriteria = WillBackupEntity.builder()
-        .savedKeyword(keyword)
+        .saved_keyword(keyword)
         .build();
     WillBackupEntity foundBackup = willBackupRepository.findOne(Example.of(backupCriteria))
         .orElseThrow(() -> new ApplicationException("指定されたキーワードに紐づくバックアップは取得できません。"));
 
     WillTodoEntity criteria = WillTodoEntity.builder()
-        .backupId(foundBackup.getId())
+        .backup_id(foundBackup.getId())
         .build();
 
     return willTodoRepository.findAll(Example.of(criteria));
@@ -52,24 +52,24 @@ public class WillTodosServiceImpl implements WillTodosService {
     Date now = new Date();
     String requestedBy = "service";
     WillBackupEntity backup = WillBackupEntity.builder()
-        .savedKeyword(keyword)
-        .createdAt(now)
-        .createdBy(requestedBy)
-        .updatedAt(now)
-        .updatedBy(requestedBy)
+        .saved_keyword(keyword)
         .build();
     Optional<WillBackupEntity> foundBackup = willBackupRepository.findOne(Example.of(backup));
     if (foundBackup.isPresent()) {
       throw new ApplicationException("禁止ワードか使用済のキーワードが指定されました。");
-    } else {
-      backup = willBackupRepository.save(backup);
     }
+
+    backup.setCreated_at(now);
+    backup.setCreated_by(requestedBy);
+    backup.setUpdated_at(now);
+    backup.setUpdated_by(requestedBy);
+    backup = willBackupRepository.save(backup);
 
     Integer backupId = backup.getId();
     entity.forEach(e -> {
-      e.setBackupId(backupId);
-      e.setUpdatedAt(now);
-      e.setUpdatedBy(requestedBy);
+      e.setBackup_id(backupId);
+      e.setUpdated_at(now);
+      e.setUpdated_by(requestedBy);
     });
 
     return willTodoRepository.saveAll(entity);

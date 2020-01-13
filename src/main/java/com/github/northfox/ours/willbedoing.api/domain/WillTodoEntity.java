@@ -30,7 +30,7 @@ public class WillTodoEntity {
   @Column(name = "id")
   private Integer id;
   @Column(name = "backup_id")
-  private Integer backupId;
+  private Integer backup_id;
   @Column(name = "sense")
   private String sense;
   @Column(name = "content")
@@ -41,23 +41,23 @@ public class WillTodoEntity {
   private Integer priority = 0;
   @Column(name = "done_at")
   @Temporal(TemporalType.TIMESTAMP)
-  private Date doneAt;
+  private Date done_at;
   @Column(name = "done_by")
-  private String doneBy;
+  private String done_by;
 
   @Column(name = "created_at")
   @Temporal(TemporalType.TIMESTAMP)
-  private Date createdAt = DateTime.now().toDate();
+  private Date created_at = DateTime.now().toDate();
   @Column(name = "created_by")
-  private String createdBy;
+  private String created_by;
   @Column(name = "updated_at")
   @Temporal(TemporalType.TIMESTAMP)
-  private Date updatedAt = DateTime.now().toDate();
+  private Date updated_at = DateTime.now().toDate();
   @Column(name = "updated_by")
-  private String updatedBy;
+  private String updated_by;
   @Column(name = "deleted_at")
   @Temporal(TemporalType.TIMESTAMP)
-  private Date deletedAt;
+  private Date deleted_at;
   @Column(name = "deleted_by")
-  private String deletedBy;
+  private String deleted_by;
 }

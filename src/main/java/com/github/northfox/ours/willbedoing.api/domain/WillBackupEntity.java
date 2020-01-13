@@ -32,21 +32,21 @@ public class WillBackupEntity {
   @Column(name = "id")
   private Integer id;
   @Column(name = "saved_keyword")
-  private String savedKeyword;
+  private String saved_keyword;
 
   @Column(name = "created_at")
   @Temporal(TemporalType.TIMESTAMP)
-  private Date createdAt = DateTime.now().toDate();
+  private Date created_at = DateTime.now().toDate();
   @Column(name = "created_by")
-  private String createdBy;
+  private String created_by;
   @Column(name = "updated_at")
   @Temporal(TemporalType.TIMESTAMP)
-  private Date updatedAt = DateTime.now().toDate();
+  private Date updated_at = DateTime.now().toDate();
   @Column(name = "updated_by")
-  private String updatedBy;
+  private String updated_by;
   @Column(name = "deleted_at")
   @Temporal(TemporalType.TIMESTAMP)
-  private Date deletedAt;
+  private Date deleted_at;
   @Column(name = "deleted_by")
-  private String deletedBy;
+  private String deleted_by;
 }

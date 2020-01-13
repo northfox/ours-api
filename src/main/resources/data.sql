@@ -22,6 +22,6 @@ insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT, DELETED_AT, DELETED_BY) val
 insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( null, 'taste', 'taste content' );
 insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( 99999, 'taste', 'backup taste content' );
 insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( 99999, 'taste', 'backup taste content 2' );
-insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( 99999, 'hoge', 'backup hoge content' );
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( 99999, 'touch', 'backup touch content' );
 insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT, DONE_AT, DONE_BY) values ( 99999, 'taste', 'taste content', now(), 'done-who');
 insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT, DELETED_AT, DELETED_BY) values ( 99999, 'taste', 'taste content', now(), 'delete-who');
