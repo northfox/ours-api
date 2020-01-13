@@ -35,3 +35,4 @@ trace.db/
 test.db*
 cheatsheets*
 README.html
+src/test/h2db/
