@@ -19,15 +19,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping(value = "/will_be_doing/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public class WillBeDoingRestApiController {
 
-    // hello
-    @RequestMapping(value = "/hello", method = {RequestMethod.GET})
-    public ResponseEntity<String> apiV1Statuses() {
-        preCall();
-        return ResponseEntity.ok("hello, world");
-    }
+  // hello
+  @RequestMapping(value = "/hello", method = {RequestMethod.GET})
+  public ResponseEntity<String> apiV1Statuses() {
+    preCall();
+    return ResponseEntity.ok("hello, world");
+  }
 
-    private void preCall() {
-        String requestUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        log.info(String.format("call api: [%s]", requestUri));
-    }
+  private void preCall() {
+    String requestUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
+    log.info(String.format("call api: [%s]", requestUri));
+  }
 }
