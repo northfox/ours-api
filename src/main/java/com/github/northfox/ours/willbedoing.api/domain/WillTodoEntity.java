@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,16 +20,15 @@ import org.joda.time.DateTime;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Entity
-@Table(name = "trx will todo",
-    indexes = {@Index(name = "idx_will_saved_keyword", columnList = "saved_keyword", unique = true)})
+@Table(name = "trx_will_todo")
 public class WillTodoEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
-  @Column(name = "saved_keyword")
-  private String savedKeyword;
+  @Column(name = "backup_id")
+  private Integer backupId;
   @Column(name = "sense")
   private String sense;
   @Column(name = "content")

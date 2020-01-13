@@ -21,7 +21,7 @@ import org.joda.time.DateTime;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Entity
-@Table(name = "trx_will_todo",
+@Table(name = "trx_will_backup",
     indexes = {@Index(name = "idx_will_saved_keyword", columnList = "saved_keyword", unique = true)})
 public class WillBackupEntity {
 
@@ -29,21 +29,8 @@ public class WillBackupEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
-  @Column(name = "backup_id")
-  private Integer backupId;
-  @Column(name = "sense")
-  private String sense;
-  @Column(name = "content")
-  private String content;
-  @Column(name = "iine")
-  private Integer iine = 0;
-  @Column(name = "priority")
-  private Integer priority = 0;
-  @Column(name = "done_at")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date doneAt;
-  @Column(name = "done_by")
-  private String doneBy;
+  @Column(name = "saved_keyword")
+  private String savedKeyword;
 
   @Column(name = "created_at")
   @Temporal(TemporalType.TIMESTAMP)
