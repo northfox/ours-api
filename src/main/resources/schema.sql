@@ -35,22 +35,34 @@ create table if not exists trx_todo
     primary key (project_id, id)
 );
 
-create table if not exists trx_will_todo
+create table if not exists trx_will_backup
 (
     id            serial primary key,
     saved_keyword varchar(1024) unique,
-    sense         varchar(256)  not null,
-    content       varchar(4000) not null,
-    iine          int                    default 0,
-    priority      int                    default 0,
-    done_at       timestamp,
-    done_by       varchar(256),
-    created_at    timestamp     not null default now(),
-    created_by    varchar(256)  not null default 'default',
-    updated_at    timestamp     not null default now(),
-    updated_by    varchar(256)  not null default 'default',
-    deleted_at    timestamp,
-    deleted_by    varchar(256)
+    created_at timestamp     not null default now(),
+    created_by varchar(256)  not null default 'default',
+    updated_at timestamp     not null default now(),
+    updated_by varchar(256)  not null default 'default',
+    deleted_at timestamp,
+    deleted_by varchar(256)
+);
+
+create table if not exists trx_will_todo
+(
+    id         serial primary key,
+    backup_id  int references trx_will_backup (id),
+    sense      varchar(256)  not null,
+    content    varchar(4000) not null,
+    iine       int                    default 0,
+    priority   int                    default 0,
+    done_at    timestamp,
+    done_by    varchar(256),
+    created_at timestamp     not null default now(),
+    created_by varchar(256)  not null default 'default',
+    updated_at timestamp     not null default now(),
+    updated_by varchar(256)  not null default 'default',
+    deleted_at timestamp,
+    deleted_by varchar(256)
 );
 
 create or replace view view_todo

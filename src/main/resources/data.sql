@@ -12,3 +12,14 @@ insert into TRX_PROJECT(ID, TITLE) values(99999, '式');
 insert into TRX_TODO(PROJECT_ID, TITLE, STATUS_ID, COST) values(99999, '芳名帳', 0, 100);
 insert into TRX_TODO(PROJECT_ID, TITLE, STATUS_ID) values(99999, '招待状', 2);
 insert into TRX_TODO(PROJECT_ID, TITLE, STATUS_ID, DONE_AT) values(99999, '料理', 3, now());
+
+insert into TRX_WILL_BACKUP(ID, SAVED_KEYWORD) values (99999, 'test' );
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( null, 'taste', 'taste content' );
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT, DONE_AT, DONE_BY) values ( null, 'taste', 'taste content', now(), 'done-who');
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT, DELETED_AT, DELETED_BY) values ( null, 'taste', 'taste content', now(), 'delete-who');
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( null, 'taste', 'taste content' );
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( 99999, 'taste', 'backup taste content' );
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( 99999, 'taste', 'backup taste content 2' );
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT) values ( 99999, 'hoge', 'backup hoge content' );
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT, DONE_AT, DONE_BY) values ( 99999, 'taste', 'taste content', now(), 'done-who');
+insert into TRX_WILL_TODO(BACKUP_ID, SENSE, CONTENT, DELETED_AT, DELETED_BY) values ( 99999, 'taste', 'taste content', now(), 'delete-who');
