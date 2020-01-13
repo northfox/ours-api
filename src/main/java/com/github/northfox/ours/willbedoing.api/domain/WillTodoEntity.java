@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import org.joda.time.DateTime;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Entity
+@Builder
 @Table(name = "trx_will_todo")
 public class WillTodoEntity {
 

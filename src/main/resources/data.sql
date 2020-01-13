@@ -1,6 +1,8 @@
 delete from TRX_TODO where PROJECT_ID = 99999;
 delete from TRX_PROJECT where ID = 99999;
 delete from MST_STATUS;
+delete from TRX_WILL_TODO where BACKUP_ID = 99999;
+delete from TRX_WILL_BACKUP where ID = 99999;
 
 insert into MST_STATUS(ID, SORT, NAME) values(0, 0, '未着手');
 insert into MST_STATUS(ID, SORT, NAME) values(1, 10, '着手中');
