@@ -4,3 +4,12 @@ spring:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATABASE_PASSWORD}
+  jpa.database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+# spring actuator
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: '*'
